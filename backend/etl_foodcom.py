@@ -4,9 +4,9 @@ import pandas as pd
 from sqlalchemy import (
     create_engine
 )
-from sqlalchemy.orm import declarative_base, Session
+from sqlalchemy.orm import Session
 from dotenv import load_dotenv
-from app.models import (Recipe, RecipeIngredient)
+from app.models import Base, Recipe, RecipeIngredient
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -52,6 +52,8 @@ def parse_ingredients(ingredients_str):
 # ETL main
 def run_etl(csv_path="data/RAW_recipes.csv", chunksize=5000):
     engine = create_engine(DATABASE_URL)
+    
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
     total = 0
