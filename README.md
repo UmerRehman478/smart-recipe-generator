@@ -14,7 +14,7 @@ The app lets you:
 
 ## Getting Started
 
-### 1 - Clone the repo (if you haven’t already)
+### 1 - Clone the repo
 
 git clone <your-repo-url>
 cd <your-repo-folder>
