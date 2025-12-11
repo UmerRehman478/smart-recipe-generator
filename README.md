@@ -14,20 +14,20 @@ The app lets you:
 
 ## Getting Started
 
-### 1 Clone the repo (if you haven’t already)
+### 1 - Clone the repo (if you haven’t already)
 
 git clone <your-repo-url>
 cd <your-repo-folder>
 
-### 2 Go into the frontend folder
+### 2 - Go into the frontend folder
 
 cd frontend
 
-### 3 Install dependencies
+### 3 - Install dependencies
 
 npm install
 
-### 4 Start the frontend dev server
+### 4 - Start the frontend dev server
 
 cd frontend
 npm run dev
