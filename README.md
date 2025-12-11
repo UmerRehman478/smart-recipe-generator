@@ -10,8 +10,6 @@ The app lets you:
 - “Like” recipes you want to keep
 - Enter your health goals (lose / maintain / gain) and view a final list of your favourite recipes
 
-The frontend is built with **React + TypeScript** and styled using **Tailwind-style utility classes** (via standard CSS classes in JSX). It talks to a separate backend API for ingredient recognition and recipe recommendations.
-
 ---
 
 ## Getting Started
