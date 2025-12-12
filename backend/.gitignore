@@ -1,0 +1,20 @@
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Editor config
+.vscode/
+.idea/
+
+# Secrets
+.env
+.env.local
+
+# Local database file
+recipes.db
+data/RAW_recipes.csv
