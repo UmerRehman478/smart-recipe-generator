@@ -1,19 +1,25 @@
 # app/services/ingredients_cleaner.py
+from typing import Set
 import inflect
 from rapidfuzz import process
+from sqlalchemy.orm import Session
+from sqlalchemy import select
+
+from app.models import RecipeIngredient
 
 p = inflect.engine()
+CANONICAL_INGREDIENTS: Set[str] = set()
 
-#Synonyms: add back later for words of same meaning
+def refresh_canonical_ingredients(db: Session) -> None:
+    rows = db.execute(
+        select(RecipeIngredient.ingredient_norm).distinct()
+    )
 
-CANONICAL_INGREDIENTS = [
-    "apple",
-    "bell pepper",
-    "green onion",
-    "spinach",
-    "chicken breast",
-    # load more from data
-]
+    CANONICAL_INGREDIENTS.clear()
+    CANONICAL_INGREDIENTS.update(row[0] for row in rows if row[0])
+
+def get_canonical_ingredients() -> Set[str]:
+    return CANONICAL_INGREDIENTS
 
 def normalize_label(label: str) -> str:
     text = label.strip().lower()
@@ -26,11 +32,11 @@ def normalize_label(label: str) -> str:
         parts[-1] = p.singular_noun(parts[-1]) or parts[-1]
     return " ".join(parts)
 
-def map_to_canonical(name: str, score_cutoff: float = 80.0) -> str | None:
+def map_to_canonical(name: str, score_cutoff: float = 60.0) -> str | None:
     name = normalize_label(name)
     match, score, _ = process.extractOne(
         name,
-        CANONICAL_INGREDIENTS,
+        get_canonical_ingredients(),
         score_cutoff=score_cutoff
     ) or (None, None, None)
     return match  

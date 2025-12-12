@@ -31,8 +31,8 @@ interface Recipe {
 }
 
 interface UserProfile {
-  height: string;
-  weight: string;
+  height_cm: string;
+  weight_kg: string;
   goal: 'lose' | 'maintain' | 'gain' | '';
 }
 
@@ -54,8 +54,8 @@ export default function App() {
   const [confirmedIngredients, setConfirmedIngredients] = useState<string[]>([]);
   const [manualIngredient, setManualIngredient] = useState('');
   const [userProfile, setUserProfile] = useState<UserProfile>({
-    height: '',
-    weight: '',
+    height_cm: '',
+    weight_kg: '',
     goal: ''
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -167,7 +167,7 @@ export default function App() {
     setSelectedFile(null);
     setIngredients([]);
     setConfirmedIngredients([]);
-    setUserProfile({ height: '', weight: '', goal: '' });
+    setUserProfile({ height_cm: '', weight_kg: '', goal: '' });
     setError(null);
     setRecipes([]);
     setSelectedRecipeId(null);
@@ -184,7 +184,7 @@ export default function App() {
     setSelectedRecipeId(recipeId);
 
     try {
-      const details = await api.getRecipeDetail(recipeId);
+      const details = await api.getRecipeDetail(recipeId, userProfile);
       setRecipeDetails(details);
     } catch (err) {
       console.error('Error loading recipe details:', err);
@@ -531,8 +531,8 @@ export default function App() {
                   </label>
                   <input
                     type="number"
-                    value={userProfile.weight}
-                    onChange={(e) => setUserProfile({ ...userProfile, weight: e.target.value })}
+                    value={userProfile.weight_kg}
+                    onChange={(e) => setUserProfile({ ...userProfile, weight_kg: e.target.value })}
                     placeholder="70"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   />
@@ -544,8 +544,8 @@ export default function App() {
                   </label>
                   <input
                     type="number"
-                    value={userProfile.height}
-                    onChange={(e) => setUserProfile({ ...userProfile, height: e.target.value })}
+                    value={userProfile.height_cm}
+                    onChange={(e) => setUserProfile({ ...userProfile, height_cm: e.target.value })}
                     placeholder="175"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   />
@@ -589,7 +589,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setCurrentStep('recipes2')}
-                  disabled={!userProfile.height || !userProfile.weight || !userProfile.goal}
+                  disabled={!userProfile.height_cm || !userProfile.weight_kg || !userProfile.goal}
                   className="px-8 py-2.5 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   See My Final Recipes

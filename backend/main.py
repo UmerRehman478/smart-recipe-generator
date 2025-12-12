@@ -1,8 +1,23 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api import vision, debug, recommend, recipes
+from app.db import SessionLocal
+from app.services.ingredients_cleaner import refresh_canonical_ingredients, get_canonical_ingredients
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # STARTUP
+    with SessionLocal() as db:
+        refresh_canonical_ingredients(db)
+        print(f"[Startup] Loaded {len(get_canonical_ingredients())} canonical ingredients")
+
+    yield
+
+    # SHUTDOWN
+    print("[Shutdown] Server stopping...")
+
+app = FastAPI(lifespan=lifespan)
 
 # CORS Configuration - Allow frontend to connect
 app.add_middleware(

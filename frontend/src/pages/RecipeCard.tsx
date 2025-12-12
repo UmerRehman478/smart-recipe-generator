@@ -128,7 +128,7 @@ export default function RecipeCard({ recipe, onToggleLike, onDelete, onViewDetai
             hover:bg-emerald-700 transition-all shadow
           "
         >
-          View Full Recipe
+          Select Recipe
         </button>
       </div>
 

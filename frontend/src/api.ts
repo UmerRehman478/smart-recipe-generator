@@ -88,14 +88,17 @@ export async function getRecommendations(request: RecommendRequest): Promise<Rec
 }
 
 // 3. GET RECIPE DETAILS (Results Step)
-export async function getRecipeDetail(recipeId: number): Promise<RecipeDetail> {
+export async function getRecipeDetail(recipeId: number, userInfo: { height_cm: string; weight_kg: string; goal: string }): Promise<RecipeDetail> {
   const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}`, {
-    method: 'GET',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userInfo),
   });
 
   if (!response.ok) {
     throw new Error(`Failed to get recipe details: ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  return data
 }
