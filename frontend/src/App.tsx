@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React, { useMemo, useState } from 'react';
+>>>>>>> UNew
 import { Upload, Camera, ChefHat, Scale, Target, X, Check, Clock, Flame } from 'lucide-react';
 import HomePage from './pages/HomePage';
 import AuthPage from './pages/AuthPage';
@@ -31,8 +35,13 @@ interface Recipe {
 }
 
 interface UserProfile {
+<<<<<<< HEAD
   height: string;
   weight: string;
+=======
+  height_cm: string;
+  weight_kg: string;
+>>>>>>> UNew
   goal: 'lose' | 'maintain' | 'gain' | '';
 }
 
@@ -40,14 +49,22 @@ type Step =
   | 'home'
   | 'auth'
   | 'upload'
+<<<<<<< HEAD
   | 'ingredients' // confirm ingredients
   | 'recipes1'    // simple list
   | 'profile'     // health goals
   | 'recipes2';   // final recipes (liked only)
+=======
+  | 'ingredients'
+  | 'recipes1'
+  | 'profile'
+  | 'recipes2';
+>>>>>>> UNew
 
 export default function App() {
   const [currentStep, setCurrentStep] = useState<Step>('home');
   const [userEmail, setUserEmail] = useState<string | null>(null);
+<<<<<<< HEAD
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -66,14 +83,49 @@ export default function App() {
   const [recipeDetails, setRecipeDetails] = useState<any>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
+=======
+
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [confirmedIngredients, setConfirmedIngredients] = useState<string[]>([]);
+  const [manualIngredient, setManualIngredient] = useState('');
+
+  const [userProfile, setUserProfile] = useState<UserProfile>({
+    height_cm: '',
+    weight_kg: '',
+    goal: ''
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+
+  // Preview modal (recipe info only, no like button)
+  const [previewRecipe, setPreviewRecipe] = useState<Recipe | null>(null);
+
+  // Final recipe modal with measurements
+  const [viewingRecipeId, setViewingRecipeId] = useState<number | null>(null);
+  const [recipeDetails, setRecipeDetails] = useState<any>(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
+
+  const likedRecipes = useMemo(() => recipes.filter(r => r.liked), [recipes]);
+
+>>>>>>> UNew
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
       const reader = new FileReader();
+<<<<<<< HEAD
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
       };
+=======
+      reader.onloadend = () => setSelectedImage(reader.result as string);
+>>>>>>> UNew
       reader.readAsDataURL(file);
     }
   };
@@ -83,7 +135,10 @@ export default function App() {
       setError('Please select an image first');
       return;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> UNew
     setIsLoading(true);
     setError(null);
 
@@ -111,17 +166,25 @@ export default function App() {
   const addManualIngredient = (name?: string) => {
     const ingName = (name ?? manualIngredient).trim();
     if (!ingName) return;
+<<<<<<< HEAD
     const newIngredient: Ingredient = {
       name: ingName,
       confidence: 1,
       raw_labels: [ingName]
     };
+=======
+
+    const newIngredient: Ingredient = { name: ingName, confidence: 1, raw_labels: [ingName] };
+>>>>>>> UNew
     setIngredients(prev => [...prev, newIngredient]);
     setConfirmedIngredients(prev => (prev.includes(ingName) ? prev : [...prev, ingName]));
     setManualIngredient('');
   };
 
+<<<<<<< HEAD
   // Get recipes (only called after ingredients step)
+=======
+>>>>>>> UNew
   const getRecipes = async () => {
     if (confirmedIngredients.length === 0) {
       setError('Please select at least one ingredient');
@@ -167,10 +230,18 @@ export default function App() {
     setSelectedFile(null);
     setIngredients([]);
     setConfirmedIngredients([]);
+<<<<<<< HEAD
     setUserProfile({ height: '', weight: '', goal: '' });
     setError(null);
     setRecipes([]);
     setSelectedRecipeId(null);
+=======
+    setUserProfile({ height_cm: '', weight_kg: '', goal: '' });
+    setError(null);
+    setRecipes([]);
+    setPreviewRecipe(null);
+    setViewingRecipeId(null);
+>>>>>>> UNew
     setRecipeDetails(null);
   };
 
@@ -179,12 +250,36 @@ export default function App() {
     setCurrentStep('upload');
   };
 
+<<<<<<< HEAD
   const viewRecipeDetails = async (recipeId: number) => {
     setLoadingDetails(true);
     setSelectedRecipeId(recipeId);
 
     try {
       const details = await api.getRecipeDetail(recipeId);
+=======
+  // Clicking a recipe card in recipes1 should show info (not select)
+  const openPreview = (recipeId: number) => {
+    const r = recipes.find(x => x.id === recipeId) || null;
+    setPreviewRecipe(r);
+  };
+
+  const closePreview = () => setPreviewRecipe(null);
+
+  // After profile is filled, user can open personalized recipe details
+  const viewRecipeInFinalTab = async (recipeId: number) => {
+    if (!userProfile.height_cm || !userProfile.weight_kg || !userProfile.goal) {
+      setError('Please complete your health profile first');
+      return;
+    }
+
+    setLoadingDetails(true);
+    setViewingRecipeId(recipeId);
+    setError(null);
+
+    try {
+      const details = await api.getRecipeWithMeasurements(recipeId, userProfile);
+>>>>>>> UNew
       setRecipeDetails(details);
     } catch (err) {
       console.error('Error loading recipe details:', err);
@@ -195,11 +290,18 @@ export default function App() {
   };
 
   const closeRecipeModal = () => {
+<<<<<<< HEAD
     setSelectedRecipeId(null);
     setRecipeDetails(null);
   };
 
   // Simple routing for home + auth
+=======
+    setViewingRecipeId(null);
+    setRecipeDetails(null);
+  };
+
+>>>>>>> UNew
   if (currentStep === 'home') {
     return (
       <HomePage
@@ -218,7 +320,10 @@ export default function App() {
     );
   }
 
+<<<<<<< HEAD
   // Step order for progress bar
+=======
+>>>>>>> UNew
   const stepOrder: Step[] = ['upload', 'ingredients', 'recipes1', 'profile', 'recipes2'];
   const stepLabels: Record<Step, string> = {
     home: '',
@@ -241,9 +346,13 @@ export default function App() {
               <h1 className="text-2xl font-bold text-gray-900">Smart Recipe Generator</h1>
             </div>
             <div className="flex items-center gap-4">
+<<<<<<< HEAD
               {userEmail && (
                 <span className="text-sm text-gray-600">Welcome, {userEmail}</span>
               )}
+=======
+              {userEmail && <span className="text-sm text-gray-600">Welcome, {userEmail}</span>}
+>>>>>>> UNew
               <button
                 onClick={resetApp}
                 className="text-sm px-3 py-1 bg-white text-emerald-600 border border-emerald-200 rounded-md hover:bg-emerald-50 transition-all"
@@ -286,7 +395,10 @@ export default function App() {
           ))}
         </div>
 
+<<<<<<< HEAD
         {/* Error display */}
+=======
+>>>>>>> UNew
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6">
             <p className="font-medium">Error:</p>
@@ -295,12 +407,20 @@ export default function App() {
         )}
 
         <div className="bg-white rounded-2xl shadow-lg p-8">
+<<<<<<< HEAD
           {currentStep === 'upload' && (
             <div className="text-center">
               <Camera className="w-16 h-16 mx-auto text-emerald-600 mb-6" />
               <h2 className="text-2xl font-bold text-gray-900 mb-3">
                 Upload Your Fridge Photo
               </h2>
+=======
+          {/* UPLOAD */}
+          {currentStep === 'upload' && (
+            <div className="text-center">
+              <Camera className="w-16 h-16 mx-auto text-emerald-600 mb-6" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">Upload Your Fridge Photo</h2>
+>>>>>>> UNew
               <p className="text-gray-600 mb-8">
                 Take a photo of your ingredients and we'll identify them for you
               </p>
@@ -347,7 +467,10 @@ export default function App() {
                 </div>
               )}
 
+<<<<<<< HEAD
               {/* Back button to home */}
+=======
+>>>>>>> UNew
               <div className="mt-8 flex justify-center">
                 <button
                   onClick={() => setCurrentStep('home')}
@@ -359,11 +482,18 @@ export default function App() {
             </div>
           )}
 
+<<<<<<< HEAD
           {currentStep === 'ingredients' && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-3">
                 Confirm Your Ingredients
               </h2>
+=======
+          {/* INGREDIENTS */}
+          {currentStep === 'ingredients' && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">Confirm Your Ingredients</h2>
+>>>>>>> UNew
               <p className="text-gray-600 mb-6">
                 Click to toggle ingredients. We detected {ingredients.length} items.
               </p>
@@ -402,9 +532,13 @@ export default function App() {
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
+<<<<<<< HEAD
                       <span className="font-medium text-gray-900 capitalize">
                         {ingredient.name}
                       </span>
+=======
+                      <span className="font-medium text-gray-900 capitalize">{ingredient.name}</span>
+>>>>>>> UNew
                       {confirmedIngredients.includes(ingredient.name) ? (
                         <Check className="w-5 h-5 text-emerald-600" />
                       ) : (
@@ -436,7 +570,11 @@ export default function App() {
             </div>
           )}
 
+<<<<<<< HEAD
           {/* Pre Recipes */}
+=======
+          {/* Recipes 1 */}
+>>>>>>> UNew
           {currentStep === 'recipes1' && (
             <div>
               <div className="flex items-start justify-between mb-8">
@@ -450,7 +588,11 @@ export default function App() {
                       {recipes.length} recipes found • {confirmedIngredients.length} ingredients used
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
+<<<<<<< HEAD
                       Based on your ingredients only. Like your favourites to save them for Final Recipes.
+=======
+                      Tap the ❤️ Like button to select multiple recipes. Click a card to view info.
+>>>>>>> UNew
                     </p>
                   </div>
                 </div>
@@ -494,17 +636,36 @@ export default function App() {
                         recipe={recipe}
                         onToggleLike={toggleLike}
                         onDelete={deleteRecipe}
+<<<<<<< HEAD
                         onViewDetails={viewRecipeDetails}
+=======
+                        onSelect={openPreview}
+>>>>>>> UNew
                       />
                     ))}
                   </div>
 
+<<<<<<< HEAD
                   <div className="flex justify-end mt-8">
                     <button
                       onClick={() => setCurrentStep('profile')}
                       className="px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-all"
                     >
                       Next: Add Health Goals
+=======
+                  {/* Footer Next button */}
+                  <div className="mt-10 flex items-center justify-between gap-4">
+                    <div className="text-sm text-gray-600">
+                      Selected: <span className="font-semibold text-gray-900">{likedRecipes.length}</span>
+                    </div>
+
+                    <button
+                      onClick={() => setCurrentStep('profile')}
+                      disabled={likedRecipes.length === 0}
+                      className="px-8 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next → Health Goals
+>>>>>>> UNew
                     </button>
                   </div>
                 </>
@@ -512,6 +673,7 @@ export default function App() {
             </div>
           )}
 
+<<<<<<< HEAD
 
           {/* Health Goals */}
           {currentStep === 'profile' && (
@@ -522,6 +684,25 @@ export default function App() {
               <p className="text-gray-600 mb-8">
                 Help us personalize recipes to your nutritional goals
               </p>
+=======
+          {/* Profile */}
+          {currentStep === 'profile' && (
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">Your Health Profile</h2>
+              <p className="text-gray-600 mb-6">Help us personalize your recipe portions and nutrition</p>
+
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-8">
+                <p className="text-sm text-emerald-800">
+                  <strong>Recipes selected:</strong> {likedRecipes.length}
+                </p>
+                {likedRecipes.length > 0 && (
+                  <p className="text-xs text-emerald-700 mt-1">
+                    {likedRecipes.slice(0, 3).map(r => r.title).join(' • ')}
+                    {likedRecipes.length > 3 ? ` • +${likedRecipes.length - 3} more` : ''}
+                  </p>
+                )}
+              </div>
+>>>>>>> UNew
 
               <div className="space-y-6 max-w-md mx-auto">
                 <div>
@@ -531,14 +712,20 @@ export default function App() {
                   </label>
                   <input
                     type="number"
+<<<<<<< HEAD
                     value={userProfile.weight}
                     onChange={(e) => setUserProfile({ ...userProfile, weight: e.target.value })}
+=======
+                    value={userProfile.weight_kg}
+                    onChange={(e) => setUserProfile({ ...userProfile, weight_kg: e.target.value })}
+>>>>>>> UNew
                     placeholder="70"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   />
                 </div>
 
                 <div>
+<<<<<<< HEAD
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Height (cm)
                   </label>
@@ -546,6 +733,13 @@ export default function App() {
                     type="number"
                     value={userProfile.height}
                     onChange={(e) => setUserProfile({ ...userProfile, height: e.target.value })}
+=======
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Height (cm)</label>
+                  <input
+                    type="number"
+                    value={userProfile.height_cm}
+                    onChange={(e) => setUserProfile({ ...userProfile, height_cm: e.target.value })}
+>>>>>>> UNew
                     placeholder="175"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   />
@@ -556,6 +750,10 @@ export default function App() {
                     <Target className="w-4 h-4 inline mr-2" />
                     Your Goal
                   </label>
+<<<<<<< HEAD
+=======
+
+>>>>>>> UNew
                   <div className="grid grid-cols-3 gap-3">
                     {[
                       { value: 'lose', label: 'Lose Weight', emoji: '📉' },
@@ -587,17 +785,33 @@ export default function App() {
                 >
                   ← Back to Recipes
                 </button>
+<<<<<<< HEAD
                 <button
                   onClick={() => setCurrentStep('recipes2')}
                   disabled={!userProfile.height || !userProfile.weight || !userProfile.goal}
                   className="px-8 py-2.5 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   See My Final Recipes
+=======
+
+                <button
+                  onClick={() => setCurrentStep('recipes2')}
+                  disabled={
+                    likedRecipes.length === 0 ||
+                    !userProfile.height_cm ||
+                    !userProfile.weight_kg ||
+                    !userProfile.goal
+                  }
+                  className="px-8 py-2.5 bg-emerald-600 text-white rounded-lg font-medium hover:bg-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  See Final Recipes
+>>>>>>> UNew
                 </button>
               </div>
             </div>
           )}
 
+<<<<<<< HEAD
           {/* Final recipes */}
           {currentStep === 'recipes2' && (() => {
             const likedRecipes = recipes.filter(r => r.liked);
@@ -673,6 +887,152 @@ export default function App() {
 
       {/* Recipe detail */}
       {selectedRecipeId && (
+=======
+          {/* Recipes 2 */}
+          {currentStep === 'recipes2' && (
+            <div>
+              <div className="flex items-start justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+                    <ChefHat className="w-8 h-8 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold text-gray-900">Final Recipes</h2>
+                    <p className="text-gray-600 mt-1">Personalized for your {userProfile.goal} goal</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Click a recipe card to view full details with measurements
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCurrentStep('profile')}
+                    className="px-4 py-2 bg-white text-emerald-600 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-all font-medium"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    onClick={resetApp}
+                    className="px-4 py-2 bg-white text-emerald-600 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-all font-medium"
+                  >
+                    Start Over
+                  </button>
+                </div>
+              </div>
+
+              {likedRecipes.length === 0 ? (
+                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-10 text-center">
+                  <div className="text-5xl mb-3">🤔</div>
+                  <h3 className="text-xl font-bold text-blue-900 mb-2">No recipes selected</h3>
+                  <p className="text-blue-800 mb-4 text-sm">
+                    Go back and like at least one recipe first
+                  </p>
+                  <button
+                    onClick={() => setCurrentStep('recipes1')}
+                    className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all"
+                  >
+                    Back to Recipes
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">
+                    Your Selected Recipes ({likedRecipes.length})
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {likedRecipes.map((recipe) => (
+                      <RecipeCard
+                        key={recipe.id}
+                        recipe={recipe}
+                        onToggleLike={toggleLike}
+                        onDelete={deleteRecipe}
+                        onSelect={viewRecipeInFinalTab}
+                        showViewButton={true}
+
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {previewRecipe && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={closePreview}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bg-gradient-to-r from-emerald-600 to-green-700 text-white p-6 relative">
+              <button
+                onClick={closePreview}
+                className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <h2 className="text-2xl font-bold pr-12 text-center">{previewRecipe.title}</h2>
+              <div className="flex gap-6 mt-4 justify-center text-sm">
+                <span className="flex items-center gap-1">
+                  <Clock className="w-4 h-4" />
+                  {previewRecipe.minutes} min
+                </span>
+                <span className="flex items-center gap-1">
+                  <Flame className="w-4 h-4" />
+                  {previewRecipe.calories ?? 'N/A'} cal
+                </span>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 text-center">
+                {previewRecipe.match_count !== undefined && (
+                  <div className="text-sm text-gray-700">
+                    <div className="font-semibold text-emerald-700 text-lg">
+                      {previewRecipe.match_count}
+                    </div>
+                    Ingredients You Have
+                  </div>
+                )}
+
+                {previewRecipe.missing_count !== undefined && (
+                  <div className="text-sm text-gray-700 mt-4">
+                    <div className="font-semibold text-amber-700 text-lg">
+                      {previewRecipe.missing_count}
+                    </div>
+                    Still Needed
+                  </div>
+                )}
+
+                {previewRecipe.score !== undefined && (
+                  <div className="text-xs text-gray-500 mt-4">
+                    Match Score: <span className="font-semibold">{previewRecipe.score}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6 flex justify-center">
+                <button
+                  onClick={closePreview}
+                  className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-all"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {viewingRecipeId && (
+>>>>>>> UNew
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           onClick={closeRecipeModal}
@@ -687,7 +1047,10 @@ export default function App() {
               </div>
             ) : recipeDetails ? (
               <div className="overflow-y-auto max-h-[90vh]">
+<<<<<<< HEAD
                 {/* Header */}
+=======
+>>>>>>> UNew
                 <div className="sticky top-0 bg-gradient-to-r from-emerald-600 to-green-700 text-white p-6">
                   <button
                     onClick={closeRecipeModal}
@@ -708,12 +1071,16 @@ export default function App() {
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 {/* Content */}
+=======
+>>>>>>> UNew
                 <div className="p-6">
                   {(recipeDetails.protein_g || recipeDetails.carbs_g || recipeDetails.fat_g) && (
                     <div className="bg-emerald-50 rounded-xl p-4 mb-6">
                       <h3 className="font-bold text-gray-900 mb-3">Nutrition Facts</h3>
                       <div className="grid grid-cols-4 gap-3 text-center">
+<<<<<<< HEAD
                         {recipeDetails.calories !== null &&
                           recipeDetails.calories !== undefined && (
                             <div>
@@ -759,10 +1126,45 @@ export default function App() {
                               <div className="text-xs text-gray-600">Fat</div>
                             </div>
                           )}
+=======
+                        {recipeDetails.calories !== null && recipeDetails.calories !== undefined && (
+                          <div>
+                            <div className="text-2xl font-bold text-emerald-700">
+                              {Math.round(recipeDetails.calories || 0)}
+                            </div>
+                            <div className="text-xs text-gray-600">Calories</div>
+                          </div>
+                        )}
+                        {recipeDetails.protein_g !== null && recipeDetails.protein_g !== undefined && (
+                          <div>
+                            <div className="text-2xl font-bold text-blue-700">
+                              {Math.round(recipeDetails.protein_g || 0)}g
+                            </div>
+                            <div className="text-xs text-gray-600">Protein</div>
+                          </div>
+                        )}
+                        {recipeDetails.carbs_g !== null && recipeDetails.carbs_g !== undefined && (
+                          <div>
+                            <div className="text-2xl font-bold text-purple-700">
+                              {Math.round(recipeDetails.carbs_g || 0)}g
+                            </div>
+                            <div className="text-xs text-gray-600">Carbs</div>
+                          </div>
+                        )}
+                        {recipeDetails.fat_g !== null && recipeDetails.fat_g !== undefined && (
+                          <div>
+                            <div className="text-2xl font-bold text-amber-700">
+                              {Math.round(recipeDetails.fat_g || 0)}g
+                            </div>
+                            <div className="text-xs text-gray-600">Fat</div>
+                          </div>
+                        )}
+>>>>>>> UNew
                       </div>
                     </div>
                   )}
 
+<<<<<<< HEAD
                   {/* Ingredients */}
                   <div className="mb-6">
                     <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -777,12 +1179,30 @@ export default function App() {
                         >
                           <span className="text-emerald-600 font-bold">•</span>
                           <span className="capitalize text-gray-700">{ing.raw}</span>
+=======
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                      <ChefHat className="w-5 h-5 text-emerald-600" />
+                      Ingredients with Measurements
+                    </h3>
+                    <ul className="space-y-2">
+                      {recipeDetails.generated_measurements?.map((m: any, idx: number) => (
+                        <li
+                          key={idx}
+                          className="flex items-start justify-between gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all"
+                        >
+                          <span className="capitalize text-gray-700 font-medium">{m.ingredient}</span>
+                          <span className="text-emerald-600 font-bold whitespace-nowrap">{m.grams}g</span>
+>>>>>>> UNew
                         </li>
                       ))}
                     </ul>
                   </div>
 
+<<<<<<< HEAD
                   {/* Steps */}
+=======
+>>>>>>> UNew
                   {recipeDetails.steps && recipeDetails.steps.length > 0 && (
                     <div>
                       <h3 className="text-xl font-bold text-gray-900 mb-3">Instructions</h3>
@@ -804,9 +1224,13 @@ export default function App() {
                 </div>
               </div>
             ) : (
+<<<<<<< HEAD
               <div className="p-6 text-center text-gray-500">
                 Failed to load recipe details
               </div>
+=======
+              <div className="p-6 text-center text-gray-500">Failed to load recipe details</div>
+>>>>>>> UNew
             )}
           </div>
         </div>

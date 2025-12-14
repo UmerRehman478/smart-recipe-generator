@@ -1,8 +1,19 @@
+<<<<<<< HEAD
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
 from app.models import Recipe, RecipeIngredient
+=======
+from typing import List, Literal
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from pydantic import BaseModel
+
+from app.db import SessionLocal
+from app.models import Recipe, RecipeIngredient
+from app.services import recipe_llm_client
+>>>>>>> UNew
 
 router = APIRouter()
 
@@ -13,8 +24,22 @@ def get_db():
     finally:
         db.close()
 
+<<<<<<< HEAD
 @router.get("/recipes/{recipe_id}")
 def get_recipe(recipe_id: int, db: Session = Depends(get_db)):
+=======
+class recipe_ingredients(BaseModel):
+    ingredients: List[str]
+    steps: List[str]
+    nutrition: List[str]
+
+class UserProfile(BaseModel):
+    height_cm: float
+    weight_kg: float
+    goal: Literal["lose", "maintain", "gain"]
+
+def get_recipe(recipe_id: int, db: Session):
+>>>>>>> UNew
     recipe = (
         db.query(Recipe)
         .filter(Recipe.id == recipe_id)
@@ -51,3 +76,50 @@ def get_recipe(recipe_id: int, db: Session = Depends(get_db)):
             for ing in ingredients
         ],
     }
+<<<<<<< HEAD
+=======
+
+@router.get("/recipes/{recipe_id}")
+async def get_recipe_basic(recipe_id: int, db: Session = Depends(get_db)):
+    """Get basic recipe details without personalized measurements"""
+    return get_recipe(recipe_id, db)
+
+# POST endpoint for recipe with personalized measurements
+@router.post("/recipes/{recipe_id}/user_measurements")
+async def get_measurements(recipe_id: int, user: UserProfile, db: Session = Depends(get_db)):
+    """Get recipe with personalized measurements based on user profile"""
+    recipe = get_recipe(recipe_id, db)
+
+    steps = recipe["steps"]
+    ingredients = recipe["ingredients"]
+
+    nutrition_list = [
+        recipe["calories"],
+        recipe["fat_g"],
+        recipe["sugar_g"],
+        recipe["sodium_mg"],
+        recipe["protein_g"],
+        recipe["sat_fat_g"],
+        recipe["carbs_g"],
+    ]
+
+    payload = {
+        "recipe": {
+            "ingredients": ingredients,
+            "steps": steps,
+            "nutrition_per_serving": nutrition_list,
+        },
+        "user": {
+            "height_cm": user.height_cm,
+            "weight_kg": user.weight_kg,
+            "goal": user.goal,
+        },
+    }
+
+    gen_measurements = await recipe_llm_client.estimate_ingredient_measurements(payload)
+
+    return {
+        **recipe,
+        "generated_measurements": gen_measurements,
+    }
+>>>>>>> UNew
