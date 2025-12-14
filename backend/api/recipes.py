@@ -64,7 +64,6 @@ def get_recipe(recipe_id: int, db: Session):
         ],
     }
 
-# NEW: GET endpoint for basic recipe details (no measurements)
 @router.get("/recipes/{recipe_id}")
 async def get_recipe_basic(recipe_id: int, db: Session = Depends(get_db)):
     """Get basic recipe details without personalized measurements"""

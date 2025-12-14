@@ -53,7 +53,7 @@ export interface RecipeDetail {
   }>;
 }
 
-// 1. RECOGNIZE INGREDIENTS (Upload Step)
+// 1. Recognize ingredients from an image
 export async function recognizeIngredients(imageFile: File): Promise<RecognizeResponse> {
   const formData = new FormData();
   formData.append('file', imageFile);
@@ -70,7 +70,7 @@ export async function recognizeIngredients(imageFile: File): Promise<RecognizeRe
   return response.json();
 }
 
-// 2. GET RECOMMENDATIONS (Ingredients Step)
+// 2. Get recipe recommendations based on recognized ingredients
 export async function getRecommendations(request: RecommendRequest): Promise<RecommendResponse> {
   const response = await fetch(`${API_BASE_URL}/recommend`, {
     method: 'POST',
@@ -91,7 +91,7 @@ export async function getRecommendations(request: RecommendRequest): Promise<Rec
   return response.json();
 }
 
-// 3. GET BASIC RECIPE DETAILS (No measurements - for recipes1 tab)
+// 3. Get basic recipe details without user-specific measurements
 export async function getRecipeBasic(recipeId: number): Promise<Omit<RecipeDetail, 'generated_measurements'>> {
   const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}`, {
     method: 'GET',
@@ -104,7 +104,7 @@ export async function getRecipeBasic(recipeId: number): Promise<Omit<RecipeDetai
   return response.json();
 }
 
-// 4. GET RECIPE DETAILS WITH MEASUREMENTS (Final Recipe Step)
+// 4. Get recipe details WITH user-specific measurements
 export async function getRecipeWithMeasurements(
   recipeId: number, 
   userInfo: { height_cm: string; weight_kg: string; goal: string }

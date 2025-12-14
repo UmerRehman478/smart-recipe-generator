@@ -91,7 +91,6 @@ export default function RecipeCard({
           </div>
         </div>
 
-        {/* ✅ ONLY FINAL RECIPES SHOW THIS */}
         {showViewButton && (
           <button
             onClick={handleView}

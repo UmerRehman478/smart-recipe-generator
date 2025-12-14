@@ -446,7 +446,7 @@ export default function App() {
             </div>
           )}
 
-          {/* RECIPES 1 (multi-select via Like + Next button) */}
+          {/* Recipes 1 */}
           {currentStep === 'recipes1' && (
             <div>
               <div className="flex items-start justify-between mb-8">
@@ -528,7 +528,7 @@ export default function App() {
             </div>
           )}
 
-          {/* PROFILE */}
+          {/* Profile */}
           {currentStep === 'profile' && (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-3">Your Health Profile</h2>
@@ -626,7 +626,7 @@ export default function App() {
             </div>
           )}
 
-          {/* RECIPES 2 (show only liked + open details modal) */}
+          {/* Recipes 2 */}
           {currentStep === 'recipes2' && (
             <div>
               <div className="flex items-start justify-between mb-8">
@@ -699,7 +699,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* PREVIEW MODAL (info only, no like button) */}
       {previewRecipe && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
@@ -770,7 +769,6 @@ export default function App() {
         </div>
       )}
 
-      {/* FINAL RECIPE DETAIL MODAL WITH MEASUREMENTS */}
       {viewingRecipeId && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
