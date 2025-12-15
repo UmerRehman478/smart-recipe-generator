@@ -31,3 +31,6 @@ npm install
 
 cd frontend
 npm run dev
+
+---
+Further instructions for setting up backend in /backend
