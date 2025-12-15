@@ -1,5 +1,4 @@
 # app/services/ingredients_cleaner.py
-<<<<<<< HEAD
 import inflect
 from rapidfuzz import process
 
@@ -15,29 +14,6 @@ CANONICAL_INGREDIENTS = [
     "chicken breast",
     # load more from data
 ]
-=======
-from typing import Set
-import inflect
-from rapidfuzz import process
-from sqlalchemy.orm import Session
-from sqlalchemy import select
-
-from app.models import RecipeIngredient
-
-p = inflect.engine()
-CANONICAL_INGREDIENTS: Set[str] = set()
-
-def refresh_canonical_ingredients(db: Session) -> None:
-    rows = db.execute(
-        select(RecipeIngredient.ingredient_norm).distinct()
-    )
-
-    CANONICAL_INGREDIENTS.clear()
-    CANONICAL_INGREDIENTS.update(row[0] for row in rows if row[0])
-
-def get_canonical_ingredients() -> Set[str]:
-    return CANONICAL_INGREDIENTS
->>>>>>> UNew
 
 def normalize_label(label: str) -> str:
     text = label.strip().lower()
@@ -50,19 +26,11 @@ def normalize_label(label: str) -> str:
         parts[-1] = p.singular_noun(parts[-1]) or parts[-1]
     return " ".join(parts)
 
-<<<<<<< HEAD
 def map_to_canonical(name: str, score_cutoff: float = 80.0) -> str | None:
     name = normalize_label(name)
     match, score, _ = process.extractOne(
         name,
         CANONICAL_INGREDIENTS,
-=======
-def map_to_canonical(name: str, score_cutoff: float = 60.0) -> str | None:
-    name = normalize_label(name)
-    match, score, _ = process.extractOne(
-        name,
-        get_canonical_ingredients(),
->>>>>>> UNew
         score_cutoff=score_cutoff
     ) or (None, None, None)
     return match  

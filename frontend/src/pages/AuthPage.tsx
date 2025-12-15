@@ -15,10 +15,7 @@ export default function AuthPage({ onBack, onLogin }: AuthPageProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-<<<<<<< HEAD
     // TODO: Add your actual authentication logic here
-=======
->>>>>>> UNew
     console.log(isSignUp ? 'Signing up...' : 'Logging in...', { email, password, name });
     onLogin(email);
   };
@@ -26,10 +23,7 @@ export default function AuthPage({ onBack, onLogin }: AuthPageProps) {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-<<<<<<< HEAD
       // Placeholder for real Google OAuth flow. Simulate a quick sign-in.
-=======
->>>>>>> UNew
       await new Promise((res) => setTimeout(res, 700));
       onLogin('google.user@example.com');
     } finally {

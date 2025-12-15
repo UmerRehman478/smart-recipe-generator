@@ -47,19 +47,9 @@ export interface RecipeDetail {
     raw: string;
     norm: string;
   }>;
-<<<<<<< HEAD
 }
 
 // 1. RECOGNIZE INGREDIENTS (Upload Step)
-=======
-  generated_measurements: Array<{
-    ingredient: string;
-    grams: number;
-  }>;
-}
-
-// 1. Recognize ingredients from an image
->>>>>>> UNew
 export async function recognizeIngredients(imageFile: File): Promise<RecognizeResponse> {
   const formData = new FormData();
   formData.append('file', imageFile);
@@ -76,11 +66,7 @@ export async function recognizeIngredients(imageFile: File): Promise<RecognizeRe
   return response.json();
 }
 
-<<<<<<< HEAD
 // 2. GET RECOMMENDATIONS (Profile Step)
-=======
-// 2. Get recipe recommendations based on recognized ingredients
->>>>>>> UNew
 export async function getRecommendations(request: RecommendRequest): Promise<RecommendResponse> {
   const response = await fetch(`${API_BASE_URL}/recommend`, {
     method: 'POST',
@@ -101,43 +87,13 @@ export async function getRecommendations(request: RecommendRequest): Promise<Rec
   return response.json();
 }
 
-<<<<<<< HEAD
 // 3. GET RECIPE DETAILS (Results Step)
 export async function getRecipeDetail(recipeId: number): Promise<RecipeDetail> {
-=======
-// 3. Get basic recipe details without user-specific measurements
-export async function getRecipeBasic(recipeId: number): Promise<Omit<RecipeDetail, 'generated_measurements'>> {
->>>>>>> UNew
   const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}`, {
     method: 'GET',
   });
 
   if (!response.ok) {
-<<<<<<< HEAD
-=======
-    throw new Error(`Failed to get recipe: ${response.statusText}`);
-  }
-
-  return response.json();
-}
-
-// 4. Get recipe details WITH user-specific measurements
-export async function getRecipeWithMeasurements(
-  recipeId: number, 
-  userInfo: { height_cm: string; weight_kg: string; goal: string }
-): Promise<RecipeDetail> {
-  const response = await fetch(`${API_BASE_URL}/recipes/${recipeId}/user_measurements`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      height_cm: parseFloat(userInfo.height_cm),
-      weight_kg: parseFloat(userInfo.weight_kg),
-      goal: userInfo.goal,
-    }),
-  });
-
-  if (!response.ok) {
->>>>>>> UNew
     throw new Error(`Failed to get recipe details: ${response.statusText}`);
   }
 
